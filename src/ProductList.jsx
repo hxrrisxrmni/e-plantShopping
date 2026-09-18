@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import './ProductList.css'
 import CartItem from './CartItem';
+import { addItem } from './CartSlice';
 function ProductList({ onHomeClick }) {
     const [showCart, setShowCart] = useState(false);
     const [showPlants, setShowPlants] = useState(false); // State to control the visibility of the About Us page
-
+    const [addedToCart, setAddedToCart] = useState({});
     const plantsArray = [
         {
             category: "Air Purifying Plants",
@@ -252,6 +253,14 @@ function ProductList({ onHomeClick }) {
         e.preventDefault();
         setShowCart(false);
     };
+    const handleAddToCart = (product) => {
+        dispatch(addItem(product));
+
+        setAddedToCart((prevState) => ({
+            ...prevState,
+            [product.name]: true,
+        }));
+    };
     return (
         <div>
             <div className="navbar" style={styleObj}>
@@ -274,13 +283,34 @@ function ProductList({ onHomeClick }) {
             </div>
             {!showCart ? (
                 <div className="product-grid">
-
-
+                    {plantsArray.map((categoryObj , categoryIndex) => (
+                    <div key={categoryIndex} classname="plant-category">
+                        <h1 className='category-title'>{categoryObj.category}</h1>
+                        <div className='plant-list'>
+                            {categoryObj.plants.map((plant, plantIndex)) => (
+                                <div key={plantIndex} className='plant-card'>
+                                    <img
+                                    src={plant.image}
+                                    alt={palnt.name}
+                                    className='plant-image'
+                                    />
+                                    <h3 className='plant-title'>{plant.name}</h3>
+                                    <p className='plant-description'>{plant.description}</p>
+                                    <p className='plant-cost'>{plant.cost}</p>
+                                    <button className='product-show-button'>Add to Cart</button>
+                                    </div>                                   
+                            ))}
+                            </div>
+                            </div>
+                ))}
                 </div>
             ) : (
                 <CartItem onContinueShopping={handleContinueShopping} />
             )}
+            
+            </div>
         </div>
+
     );
 }
 
